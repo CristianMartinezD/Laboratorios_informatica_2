@@ -947,64 +947,14 @@ void problema_2(){
         cout<<"VALOR NO VALIDO"; ENTRADA = verificar_entero("VALOR NO VALIDO");
     }
 
-    int cincuentamil = 0, veintemil = 0, diezmil = 0, cincomil = 0, dosmil = 0, mil = 0, quiniento = 0, dociento = 0, cien = 0, cincuenta = 0, faltante = 0;
-    if(ENTRADA >= 50000){
-        cincuentamil = ENTRADA/50000;
-        ENTRADA = ENTRADA%50000;
-    }
-    if(ENTRADA < 50000 && ENTRADA >= 20000){
-        veintemil = ENTRADA/20000;
-        ENTRADA = ENTRADA%20000;
-    }
-    if(ENTRADA < 20000 && ENTRADA >= 10000){
-        diezmil = ENTRADA/10000;
-        ENTRADA = ENTRADA%10000;
-    }
-    if(ENTRADA < 10000 && ENTRADA >= 5000){
-        cincomil = ENTRADA/5000;
-        ENTRADA = ENTRADA%5000;
-    }
-    if(ENTRADA < 5000 && ENTRADA >= 2000){
-        dosmil = ENTRADA/2000;
-        ENTRADA = ENTRADA%2000;
-    }
-    if(ENTRADA < 2000 && ENTRADA >= 1000){
-        mil = ENTRADA/1000;
-        ENTRADA = ENTRADA%1000;
-    }
-    if(ENTRADA < 1000 && ENTRADA >= 500){
-        //cout<<"\nLo que hay: "<<ENTRADA<<endl;
-        quiniento = ENTRADA/500;
-        ENTRADA = ENTRADA%500;
-    }
-    if(ENTRADA < 500 && ENTRADA >= 200){
-        dociento = ENTRADA/200;
-        ENTRADA = ENTRADA%200;
-    }
-    if(ENTRADA < 200 && ENTRADA >= 100){
-        cien = ENTRADA/100;
-        ENTRADA = ENTRADA%100;
-    }
-    if(ENTRADA < 100 && ENTRADA >= 50){
-        cincuenta = ENTRADA/50;
-        ENTRADA = ENTRADA%50;
-    }
-    if(ENTRADA < 50 && ENTRADA >= 1){
-        faltante = ENTRADA/1;
-        ENTRADA = ENTRADA%1;
-    }
+    int vector[11] = {50000,20000,10000,5000,2000,1000,500,200,100,50,1};
 
-    cout<<"50000: "<<cincuentamil<<endl;
-    cout<<"20000: "<<veintemil<<endl;
-    cout<<"10000: "<<diezmil<<endl;
-    cout<<"5000: "<<cincomil<<endl;
-    cout<<"2000: "<<dosmil<<endl;
-    cout<<"1000: "<<mil<<endl;
-    cout<<"500: "<<quiniento<<endl;
-    cout<<"200: "<<dociento<<endl;
-    cout<<"100: "<<cien<<endl;
-    cout<<"50: "<<cincuenta<<endl;
-    cout<<"Faltante: "<<faltante<<endl;
+    for (int i = 0; i < 11; ++i) {
+        if(i==10) cout<<"Faltante: "<<ENTRADA/vector[i]<<endl;
+        else cout<<vector[i]<<": "<<ENTRADA/vector[i]<<endl;
+        ENTRADA = ENTRADA%vector[i];
+
+    }
 
     system("pause");
     system("cls");
