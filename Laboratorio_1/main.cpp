@@ -87,9 +87,32 @@ int main()
         }
 
         else if(OPCION == 2){
-            switch (OPCION) {
-            //case 1: problema_1();
-            cout<<"Hola"; break;
+            string problema; int PROBLEMA;
+            cout<<"\nCual problema deseas probar (del 1 al 17): "; cin>>problema;
+            PROBLEMA = verificar_entero(problema);
+            while (PROBLEMA < 1 || PROBLEMA > 17) {
+                cout<<"Valor NO valido"<<endl;
+                PROBLEMA = verificar_entero("Valor NO valido");
+            }
+
+            switch (PROBLEMA) {
+                case 1: problema_1(); break;
+                case 2: problema_2(); break;
+                case 3: problema_3(); break;
+                case 4: problema_4(); break;
+                case 5: problema_5(); break;
+                case 6: problema_6(); break;
+                case 7: problema_7(); break;
+                case 8: problema_8(); break;
+                case 9: problema_9(); break;
+                case 10: problema_10(); break;
+                case 11: problema_11(); break;
+                case 12: problema_12(); break;
+                case 13: problema_13(); break;
+                case 14: problema_14(); break;
+                case 15: problema_15(); break;
+                case 16: problema_16(); break;
+                case 17: problema_17(); break;
             }
         }
 
@@ -891,6 +914,110 @@ void ejercicio_30(){
     system("cls");
 }
 /*##########FIN##########*/
+
+
+void problema_1(){
+    cout<<"\n         IDENTIFICAR SI ES CONSONANTE, VOCAL O NINGUNA.\n";
+
+    char caracter; string vocales = "aeiouAEIOU"; string consonantes = "bcdfghjklmnñpqrstvwxyzBCDFGHJKLMNÑPQRSTVWXYZ";
+
+    cout<<"\nIngresa un caracter: "; cin>>caracter;
+
+    if(consonantes.find(caracter) != string::npos){
+        cout<<"\n\nEl caracter " <<caracter<<" es una consonante\n\n";
+    }
+    else if(vocales.find(caracter) != string::npos){
+        cout<<"\n\nEl caracter " <<caracter<<" es una vocal\n\n";
+    }
+    else cout<<"\n\nEl caracter " <<caracter<<" NO es una letra\n\n";
+
+    system("pause");
+    system("cls");
+}
+
+
+void problema_2(){
+    cout<<"\n   DETERMINAR LA MINIMA COMBINACION DE BILLETES Y MONEDAS PARA UNA CANTIDAD DE DINERO DETERMINADA\n\n";
+
+    string entrada; int ENTRADA;
+    cout<<"Ingresa una cantidad(entera) de dinero: "; cin>>entrada;
+    ENTRADA = verificar_entero(entrada);
+
+    while (ENTRADA < 0) {
+        cout<<"VALOR NO VALIDO"; ENTRADA = verificar_entero("VALOR NO VALIDO");
+    }
+
+    int cincuentamil = 0, veintemil = 0, diezmil = 0, cincomil = 0, dosmil = 0, mil = 0, quiniento = 0, dociento = 0, cien = 0, cincuenta = 0, faltante = 0;
+    if(ENTRADA >= 50000){
+        cincuentamil = ENTRADA/50000;
+        ENTRADA = ENTRADA%50000;
+    }
+    if(ENTRADA < 50000 && ENTRADA >= 20000){
+        veintemil = ENTRADA/20000;
+        ENTRADA = ENTRADA%20000;
+    }
+    if(ENTRADA < 20000 && ENTRADA >= 10000){
+        diezmil = ENTRADA/10000;
+        ENTRADA = ENTRADA%10000;
+    }
+    if(ENTRADA < 10000 && ENTRADA >= 5000){
+        cincomil = ENTRADA/5000;
+        ENTRADA = ENTRADA%5000;
+    }
+    if(ENTRADA < 5000 && ENTRADA >= 2000){
+        dosmil = ENTRADA/2000;
+        ENTRADA = ENTRADA%2000;
+    }
+    if(ENTRADA < 2000 && ENTRADA >= 1000){
+        mil = ENTRADA/1000;
+        ENTRADA = ENTRADA%1000;
+    }
+    if(ENTRADA < 1000 && ENTRADA >= 500){
+        //cout<<"\nLo que hay: "<<ENTRADA<<endl;
+        quiniento = ENTRADA/500;
+        ENTRADA = ENTRADA%500;
+    }
+    if(ENTRADA < 500 && ENTRADA >= 200){
+        dociento = ENTRADA/200;
+        ENTRADA = ENTRADA%200;
+    }
+    if(ENTRADA < 200 && ENTRADA >= 100){
+        cien = ENTRADA/100;
+        ENTRADA = ENTRADA%100;
+    }
+    if(ENTRADA < 100 && ENTRADA >= 50){
+        cincuenta = ENTRADA/50;
+        ENTRADA = ENTRADA%50;
+    }
+    if(ENTRADA < 50 && ENTRADA >= 1){
+        faltante = ENTRADA/1;
+        ENTRADA = ENTRADA%1;
+    }
+
+    cout<<"50000: "<<cincuentamil<<endl;
+    cout<<"20000: "<<veintemil<<endl;
+    cout<<"10000: "<<diezmil<<endl;
+    cout<<"5000: "<<cincomil<<endl;
+    cout<<"2000: "<<dosmil<<endl;
+    cout<<"1000: "<<mil<<endl;
+    cout<<"500: "<<quiniento<<endl;
+    cout<<"200: "<<dociento<<endl;
+    cout<<"100: "<<cien<<endl;
+    cout<<"50: "<<cincuenta<<endl;
+    cout<<"Faltante: "<<faltante<<endl;
+
+    system("pause");
+    system("cls");
+}
+
+
+
+void problema_3(){}
+void problema_4(){} void problema_5(){} void problema_6(){}
+void problema_7(){} void problema_8(){} void problema_9(){}
+void problema_10(){} void problema_11(){} void problema_12(){}
+void problema_13(){} void problema_14(){} void problema_15(){}
+void problema_16(){} void problema_17(){}
 
 
 
