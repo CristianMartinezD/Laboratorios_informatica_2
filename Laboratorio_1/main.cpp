@@ -962,10 +962,338 @@ void problema_2(){
 
 
 
-void problema_3(){}
-void problema_4(){} void problema_5(){} void problema_6(){}
-void problema_7(){} void problema_8(){} void problema_9(){}
-void problema_10(){} void problema_11(){} void problema_12(){}
+void problema_3(){
+    cout<<"\n     EVALUAR FECHA.\n";
+
+    string dia, mes; int DIA, MES;
+
+    cout<<"\nIngresa el DIA: "; cin>>dia;
+    DIA = verificar_entero(dia);
+    DIA = mayor_a_0(DIA);
+    cout<<"\nIngresa el MES: "; cin>>mes;
+    MES = verificar_entero(mes);
+    MES = mayor_a_0(MES);
+
+    /* TRES CASOS TRIVIALES */
+    if (MES > 12) {cout<<MES<<" es un mes invalido.\n\n"; system("pause"); system("cls"); return;}
+    if (DIA > 31) {cout<<DIA<<" es un dia invalido.\n\n"; system("pause"); system("cls"); return;}
+    if (MES == 2 && DIA == 29) {cout<<"29/2 es valida en bisiesto.\n\n"; system("pause"); system("cls"); return;}
+
+
+    /* MESES DE 31 DIA */
+    if (MES == 1 || MES == 3 || MES == 5 || MES == 7 || MES == 8 || MES == 10 || MES == 12){
+        cout<<DIA<<"/"<<MES<<" es una fecha valida.\n\n";
+        system("pause");system("cls"); return;
+    }
+
+    /* MESES DE MENOS DE 31 DIA */
+    else{
+        if (DIA == 31) cout<<DIA<<"/"<<MES<<" es una fecha invalida.\n\n";
+        else if (DIA == 30 && MES == 2) cout<<DIA<<"/"<<MES<<" es una fecha invalida.\n\n";
+        else cout<<DIA<<"/"<<MES<<" es una fecha valida.\n\n";
+        system("pause");system("cls"); return;
+    }
+}
+
+
+
+void problema_4(){
+    string hora, adicion; int HORA, ADICION;
+    cout<<"\nIngresa la hora en este formato: 1245 (doce y cuarenta y cinco): "; cin>>hora;
+    HORA = verificar_entero(hora);
+
+    while (HORA < 0 || HORA > 2359 || HORA%100 > 59) {
+        cout<<HORA<<" ES UNA HORA INVALIDA, VUELVE A INGREASARLA: "; cin>>hora;
+        HORA = verificar_entero(hora);
+    }
+
+
+    cout<<"\nCuanto tiempo le quieres adicionar, ej: 345 (tres horas y cuarenta y cinco minutos): "; cin>>adicion;
+    ADICION = verificar_entero(adicion);
+    while (ADICION < 0 || ADICION > 2359 || ADICION%100 > 59) {
+        cout<<ADICION<<" ES UN TIEMPO INVALIDO, VUELVE A INTENTARLO: "; cin>>adicion;
+        ADICION = verificar_entero(adicion);
+    }
+
+    if (HORA + ADICION > 2359){
+        HORA = HORA+ADICION-2360;
+    }
+
+    else{
+        if ((HORA+ADICION)%100 > 59){
+            HORA = HORA + ADICION + 100 - 60;
+        }
+        else{
+            HORA = HORA + ADICION;
+        }
+    }
+
+    cout<<"\nLa hora resultante es: "<<HORA<<endl<<endl;
+    system("pause");
+    system("cls");
+}
+
+
+void problema_5(){
+    int base;
+    cout<<"\nIngresa la base del triangulo: "; cin>>base;
+    int altura = (base + 1)/2;
+
+    for (int i = 1; i <= altura; ++i) {
+        for (int j = 0; j < altura - i; ++j) {
+            cout<<" ";
+        }
+        for (int k = 0; k < 2*i-1; ++k) {
+            cout<<"*";
+        }
+        cout<<endl;
+    }
+
+
+    for (int i = altura-1; i >= 1; --i) {
+        for (int j = 0; j < altura - i; ++j) {
+            cout<<" ";
+        }
+        for (int k = 0; k < 2*i-1; ++k) {
+            cout<<"*";
+        }
+        cout<<endl;
+    }
+
+    system("pause");
+    system("cls");
+}
+
+
+void problema_6(){
+    string numero; int NUMERO;
+    cout<<"\nIngrese el numero de elementos a usar en la aproximacion: "; cin>>numero;
+    NUMERO = verificar_entero(numero);
+    while (NUMERO <= 0) {
+        cout<<"\nEL NUMERO DE ELEMENTOS DEBE SER MAYOR A 0.\n"; NUMERO = verificar_entero("INVALIDO");
+    }
+
+    float aproximacion = 0;
+    for (int i = 0; i <= NUMERO-1; ++i) {
+        float e = 1;
+        for (int j = 1; j <= i; ++j) {
+            e = j*e;
+        }
+        aproximacion += 1/e;
+    }
+    cout<<"\ne es aproximadamante: "<<aproximacion<<endl<<endl;
+    system("pause");
+    system("cls");
+}
+
+
+
+void problema_7(){
+    int NUMERO, suma = 0; string numero;
+    cout<<"\n      SERIE DE FIBONACCI\n";
+    cout<<"\nIngresa un numero entero positivo: "; cin>>numero;
+    NUMERO = verificar_entero(numero);
+    NUMERO = mayor_a_0(NUMERO);
+
+
+    if (NUMERO <= 2) suma = 0;
+    else{
+        int anterior = 1, reAnterior = 1, Fibonacci = 0;
+        while (Fibonacci < NUMERO) {
+            Fibonacci = anterior + reAnterior;
+            reAnterior = anterior;
+            anterior = Fibonacci;
+            if(Fibonacci%2 == 0) suma += Fibonacci;
+        }
+    }
+    cout<<"\nEl resultado de la suma es: "<<suma<<endl<<endl;
+    system("pause");
+    system("cls");
+}
+
+
+
+void problema_8(){
+    int A,B,C,suma_multiplos_A = 0,suma_multiplos_B = 0; string a,b,c;
+    cout<<"\n      SUMA DE MULTIPLOS\n";
+    cout<<"\nIngresa un numero entero mayor a 0: "; cin>>a;
+    A = verificar_entero(a);
+    A = mayor_a_0(A);
+    cout<<"\nIngresa OTRO numero entero mayor a 0: "; cin>>b;
+    B = verificar_entero(b);
+    B = mayor_a_0(B);
+    cout<<"\nIngresa un numero entero mayor a 0: "; cin>>c;
+    C = verificar_entero(c);
+    C = mayor_a_0(C);
+
+    cout<<endl;
+    int i = 1;
+    while (A*i < C) {
+        suma_multiplos_A += A*i;
+        cout<<A*i<<"+";
+        i += 1;
+    }
+
+    bool signo = false;
+    i = 1;
+    while (B*i < C) {
+
+        if ((B*i)%A != 0){
+            suma_multiplos_B += B*i;
+            if (signo == true)cout<<"+";
+            cout<<B*i;
+            signo = true;
+        }
+        i += 1;
+    }
+    cout<<"=";
+    cout<<suma_multiplos_A+suma_multiplos_B<<endl<<endl;
+    system("pause");
+    system("cls");
+}
+
+
+void problema_9(){
+    system("cls");
+    cout<<"\n   PROGRAMA QUE AL RECIBIR 231 HACE 2^2+3^3+1^1=32.\n\n";
+    int N; string n;
+    cout<<"Escribe un numero entero: "; cin>>n;
+
+    N = verificar_entero(n);
+
+    if (N < 0) N = -1*N;
+
+    int digito;
+    int suma = 0;
+    int digitoCopia;
+    while (N > 0) {
+        digito = N%10;
+        digitoCopia = digito;
+        for (int i = 1; i < digitoCopia; ++i) {
+            digito = digito*digitoCopia;
+        }
+        suma = suma+digito;
+        N = N/10;
+
+    }
+
+    cout<<"\n\nEl resultado de la suma es: "<<suma<<"\n\n";
+    system("pause");
+    system("cls");
+}
+
+
+
+void problema_10(){
+    cout<<"\n       EL N-ESIMO PRIMO\n\n";
+
+    string n; int N;
+    cout<<"Escribe un numero:"; cin>>n;
+    N = verificar_entero(n);
+    N = mayor_a_0(N);
+
+    int contador = 1; // Contar numero de primos.
+    int num = 1;
+
+    while (contador <= N) {
+        num++;
+        bool esPrimo = true; // Asumir que num sera primo.
+
+        if (num < 2) {
+            esPrimo = false; // Si num < 2 entonces num NO ES PRIMO.
+        } else {
+            for (int i = 2; i*i <= num; i++) { // Tambien podríamos iterar hasta i <= num/2
+                if (num % i == 0) {
+                    esPrimo = false;
+                    break;
+                }
+            }
+        }
+
+        if (esPrimo) {
+            contador++;
+        }
+    }
+
+    cout << "El primo numero " << N << " es: " << num << endl;
+    system("pause");
+    system("cls");
+}
+
+
+void problema_11(){
+    cout<<"\n       MCM DE TODOS LOS NUMEROS ENTRE 1 Y N\n\n";
+
+    string n; int N;
+    cout<<"Escribe un numero:"; cin>>n;
+    N = verificar_entero(n);
+    N = mayor_a_0(N);
+
+    int mcm = 1;
+
+    for (int i = 2; i <= N; i++) {
+        int a = mcm;
+        int b = i;
+
+        // Calcular el MCD (Máximo Común Divisor) de a y b usando el algoritmo de Euclides
+        while (b != 0) {
+            int temp = b;
+            b = a % b;
+            a = temp;
+        }
+
+        int mcd = a;
+
+        // Calcular el MCM usando la relación MCM(a, b) = (a * b) / MCD(a, b)
+        mcm = (mcm * i) / mcd;
+    }
+
+    cout << "El minimo comun multiplo es: " << mcm << endl <<endl;
+    system("pause");
+    system("cls");
+}
+
+
+void problema_12(){
+    cout<<"\n       MAXIMO FACTOR PRIMO DE N\n\n";
+
+    string n; int N;
+    cout<<"Escribe un numero:"; cin>>n;
+    N = verificar_entero(n);
+    N = mayor_a_0(N);
+
+    int mita = N/2;
+    int maximo = 1;
+    bool esPrimo = true;
+
+    for (int i = 2; i*i <= N; i++) { // Tambien podríamos iterar hasta i <= num/2
+        if (N % i == 0) {
+            esPrimo = false;
+            break;
+        }
+    }
+
+    if (esPrimo) maximo = N;
+    else{
+        for (int i = mita; i >= 1; --i){
+            if (N%i == 0){
+                esPrimo = true;
+                for (int j = 2; j*j <= i; j++) { // Tambien podríamos iterar hasta i <= num/2
+                    if (i % j == 0) {
+                        esPrimo = false;
+                        break;
+                    }
+                }
+                if (esPrimo) {maximo = i; break;}
+            }
+        }
+    }
+    cout<<"\nEl mayor factor primo de "<<N<<" es: "<<maximo<<endl<<endl;
+    system("pause");
+    system("cls");
+}
+
+
 void problema_13(){} void problema_14(){} void problema_15(){}
 void problema_16(){} void problema_17(){}
 
