@@ -1370,16 +1370,16 @@ void problema_15(){
     cout<<"Introduce el tamano de la espiral (debe ser un numero impar): "; cin>>n;
     N = verificar_entero(n);
     N = mayor_a_0(N);
-    while (N%2 == 0) {N = verificar_entero("Numero invalido");}
+    while (N%2 == 0) {N = verificar_entero("El numero debe ser impar");}
 
-    int espiral[N][N];
-    int valor = 1;
+    int espiral[N][N]; //Declaro una matriz bidimensional NXN.
+    int valor = 1;  //Será el número que se colocará en cada celda de la matriz.
     int x = N / 2, y = N / 2;  // Empezamos en el centro de la espiral
 
-    espiral[x][y] = valor++;
+    espiral[x][y] = valor++;    //Coloco el primer valor (1) en el centro de la matriz.
 
-    for (int capa = 1; capa <= N / 2; capa++) {
-        // Hacia la derecha
+    for (int capa = 1; capa <= N / 2; capa++) { //Aquí empezamos a generar la espiral
+        // Movimiento inicial hacia la derecha
         y++;
         espiral[x][y] = valor++;
 
@@ -1493,7 +1493,7 @@ void problema_17(){
     K = verificar_entero(k);
     K = mayor_a_0(K);
 
-    int n = 1;
+    int n = 1; //Semilla para el enésimo número triangular
     int triangular = 0;
     int numDivisores = 0;
 
