@@ -1294,8 +1294,235 @@ void problema_12(){
 }
 
 
-void problema_13(){} void problema_14(){} void problema_15(){}
-void problema_16(){} void problema_17(){}
+void problema_13(){
+    cout<<"\n       SUMA DE TODOS LOS PRIMOS MENORES A N\n\n";
+
+    string n; int N;
+    cout<<"Escribe un numero:"; cin>>n;
+    N = verificar_entero(n);
+    N = mayor_a_0(N);
+
+    int suma = 0;
+
+    for (int num = 2; num < N; num++) { // Itera desde 2 hasta n-1
+        bool esPrimo = true;
+
+        // Verificar si num es primo
+        for (int i = 2; i < num; i++) {
+            if (num % i == 0) { // Si num es divisible por i, no es primo
+                esPrimo = false;
+                break;
+            }
+        }
+
+        // Si es primo, añadirlo a la suma
+        if (esPrimo) {
+            suma += num;
+        }
+    }
+
+    cout << "El resultado de la suma es: " << suma << endl <<endl;
+    system("pause");
+    system("cls");
+}
+
+
+
+void problema_14(){
+    cout<<"\n       Palindromo mas grande que puede ser obtenido como un producto de dos numeros de 3 digitos.\n\n";
+    int maxPalindromo = 0;
+    int num1 = 0, num2 = 0;
+
+    // Iterar sobre todos los pares de números de 3 dígitos
+    for (int i = 100; i <= 999; i++) {
+        for (int j = i; j <= 999; j++) { // j empieza desde i para evitar duplicados
+            int producto = i * j;
+            int temp = producto;
+            int inverso = 0;
+
+            // Verificar si el producto es un palíndromo
+            while (temp > 0) {
+                inverso = inverso * 10 + (temp % 10);
+                temp /= 10;
+            }
+
+            if (producto == inverso) { // Es palíndromo
+                if (producto > maxPalindromo) {
+                    maxPalindromo = producto;
+                    num1 = i;
+                    num2 = j;
+                }
+            }
+        }
+    }
+
+    cout << num1 << "*" << num2 << "=" << maxPalindromo << endl <<endl;
+    system("pause");
+    system("cls");
+}
+
+
+
+void problema_15(){
+    cout<<"\n       SUMA DE LOS NUMEROS EN LA DIAGONAL DE UNA ESPIRAL NXN\n\n";
+
+    string n; int N;
+    cout<<"Introduce el tamano de la espiral (debe ser un numero impar): "; cin>>n;
+    N = verificar_entero(n);
+    N = mayor_a_0(N);
+    while (N%2 == 0) {N = verificar_entero("Numero invalido");}
+
+    int espiral[N][N];
+    int valor = 1;
+    int x = N / 2, y = N / 2;  // Empezamos en el centro de la espiral
+
+    espiral[x][y] = valor++;
+
+    for (int capa = 1; capa <= N / 2; capa++) {
+        // Hacia la derecha
+        y++;
+        espiral[x][y] = valor++;
+
+        // Hacia arriba
+        for (int i = 1; i <= 2 * capa - 1; i++) {
+            x--;
+            espiral[x][y] = valor++;
+        }
+
+        // Hacia la izquierda
+        for (int i = 1; i <= 2 * capa; i++) {
+            y--;
+            espiral[x][y] = valor++;
+        }
+
+        // Hacia abajo
+        for (int i = 1; i <= 2 * capa; i++) {
+            x++;
+            espiral[x][y] = valor++;
+        }
+
+        // Hacia la derecha
+        for (int i = 1; i <= 2 * capa; i++) {
+            y++;
+            espiral[x][y] = valor++;
+        }
+    }
+
+    // Sumar las diagonales
+    int sumaDiagonal = 0;
+    for (int i = 0; i < N; i++) {
+        sumaDiagonal += espiral[i][i];  // Diagonal principal
+        if (i != N - 1 - i) {
+            sumaDiagonal += espiral[i][N - 1 - i];  // Diagonal secundaria
+        }
+    }
+
+    // Imprimir la espiral
+    cout << "Espiral de " << N << "x" << N << ":" << endl;
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            cout << espiral[i][j] << "\t";
+        }
+        cout << endl;
+    }
+
+    cout << "La suma de los numeros en la diagonal es: " << sumaDiagonal << endl <<endl;
+    system("pause");
+    system("cls");
+}
+
+
+
+void problema_16(){
+    cout<<"\n       SERIE DE COLLATZ\n\n";
+    int K; string k;
+    cout << "Introduce un numero k: "; cin >> k;
+    K = verificar_entero(k);
+    K = mayor_a_0(K);
+
+    int maxLongitud = 0;
+    int mejorSemilla = 0;
+
+    // Iteramos sobre todas las semillas menores que K
+    for (int j = 1; j < K; j++) {
+        int n = j;
+        int longitud = 1;  // Iniciamos la longitud en 1 porque el primer término es j
+
+        // Calculamos la longitud de la serie de Collatz para la semilla j
+        while (n != 1) {
+            if (n % 2 == 0) {
+                n = n / 2;
+            } else {
+                n = 3 * n + 1;
+            }
+            longitud++;
+        }
+
+        // Verificamos si esta serie es la más larga encontrada hasta ahora
+        if (longitud > maxLongitud) {
+            maxLongitud = longitud;
+            mejorSemilla = j;
+        }
+    }
+
+    cout << "La serie mas larga es con la semilla: " << mejorSemilla << ", teniendo " << maxLongitud << " terminos." << endl;
+
+    // Imprimir la serie completa para la mejor semilla
+    int n = mejorSemilla;
+    cout << "La serie es: " << n;
+
+    while (n != 1) {
+        if (n % 2 == 0) {
+            n = n / 2;
+        } else {
+            n = 3 * n + 1;
+        }
+        cout << ", " << n;
+    }
+    cout << endl <<endl;
+    system("pause");
+    system("cls");
+}
+
+
+
+void problema_17(){
+    cout<<"\n       SECUENCIA DE NUMEROS TRIANGULARES\n\n";
+    int K; string k;
+    cout << "Introduce un numero k: ";cin >> k;
+    K = verificar_entero(k);
+    K = mayor_a_0(K);
+
+    int n = 1;
+    int triangular = 0;
+    int numDivisores = 0;
+
+    while (numDivisores <= K) {
+        triangular = n * (n + 1) / 2;  // Calculamos el enésimo número triangular
+        numDivisores = 0;
+
+        // Calculamos el número de divisores del número triangular
+        for (int i = 1; i * i <= triangular; i++) {
+            if (triangular % i == 0) {
+                if (i * i == triangular) {
+                    numDivisores++;  // Contamos solo una vez si es un divisor cuadrado
+                } else {
+                    numDivisores += 2;  // Contamos dos divisores (i y triangular/i)
+                }
+            }
+        }
+
+        if (numDivisores > K) {
+            break;  // Salimos del bucle si encontramos un número triangular con más de k divisores
+        }
+
+        n++;
+    }
+
+    cout << "El numero es: " << triangular << " que tiene " << numDivisores << " divisores." << endl <<endl;
+    system("pause");
+    system("cls");
+}
 
 
 
