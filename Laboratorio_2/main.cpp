@@ -46,11 +46,13 @@ int main()
 
         // Limpiar la pantalla y hacer pausa según el sistema operativo
         #ifdef __linux__
-                getchar();
-                system("clear"); // Para Linux
+            cout << "\nPresiona P y Enter para continuar...";
+            char pausa;
+            cin >> pausa;
+            system("clear"); // Para Linux
         #elif defined(_WIN32) || defined(_WIN64)
-                system("pause");
-                system("cls");   // Para Windows
+            system("pause");
+            system("cls");   // Para Windows
         #endif
     }
 
