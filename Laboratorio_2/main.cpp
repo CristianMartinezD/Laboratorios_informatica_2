@@ -1,6 +1,16 @@
 #include <iostream>
 #include <algorithm> // Para usar las funciones reverse, swap, max y min
 #include <vector>
+
+// directivas de preprocesador para determinar si el codigo se esta compilando en linux o en windows.
+#ifdef __linux__
+#include <cstdlib> // Para system()
+#elif defined(_WIN32) || defined(_WIN64)
+#include <cstdlib> // Para system()
+#else
+#error "Sistema operativo no soportado"
+#endif
+
 using namespace std;
 
 void problema2 (); int problema4 (); void problema6 ();
@@ -33,8 +43,15 @@ int main()
         case 18: problema18 (); break;
         }
 
-        system("pause");
-        system("cls");
+
+        // Limpiar la pantalla y hacer pausa según el sistema operativo
+        #ifdef __linux__
+                getchar();
+                system("clear"); // Para Linux
+        #elif defined(_WIN32) || defined(_WIN64)
+                system("pause");
+                system("cls");   // Para Windows
+        #endif
     }
 
 
