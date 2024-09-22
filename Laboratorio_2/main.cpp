@@ -465,30 +465,31 @@ void problema18 (){
 
     string permutacion = "0123456789";
 
-    // Aquí generamos permutaciones hasta alcanzar la enésima
+    // Por cada iteración generamos una permutación, hasta alcanzar la enésima
     for (int contador = 1; contador < n; ++contador) {
-        int i = permutacion.length() - 2;
+        int indice = permutacion.length() - 2;
 
-        // Encuentramos el primer dígito que es menor que el siguiente
-        while (i >= 0 && permutacion[i] >= permutacion[i + 1])
-            i--;
+        // PASO 1. Encontramos el primer dígito que es menor que el siguiente
+        // El recorrido es de DERECHA A IZQUIERDA.
+        while (indice >= 0 && permutacion[indice] >= permutacion[indice + 1])
+            indice--;
 
-        if (i < 0) {
+        if (indice < 0) {
             cout << "No hay suficientes permutaciones." << endl;
             hubosuficientespermutaciones = false;
             break;
         }
 
-        // Encuentramos el número más pequeño a la derecha de permutacion[i] que sea mayor que permutacion[i]
-        int j = permutacion.length() - 1;
-        while (permutacion[j] <= permutacion[i])
-            j--;
+        // PASO 2. Encuentramos el número más pequeño a la derecha de permutacion[indice] que sea mayor que permutacion[indice]
+        int indice2 = permutacion.length() - 1;
+        while (permutacion[indice2] <= permutacion[indice])
+            indice2--;
 
-        // Intercambiamos permutacion[i] y permutacion[j]
-        swap(permutacion[i], permutacion[j]);
+        // Intercambiamos permutacion[indice] y permutacion[indice2]
+        swap(permutacion[indice], permutacion[indice2]);
 
-        // Invertimos los dígitos a la derecha de permutacion[i] para obtener la siguiente permutación
-        reverse(permutacion.begin() + i + 1, permutacion.end());
+        // Invertimos los dígitos a la derecha de permutacion[indice] para obtener la siguiente permutación
+        reverse(permutacion.begin() + indice + 1, permutacion.end());
     }
 
     // Mostramos la permutación número n
