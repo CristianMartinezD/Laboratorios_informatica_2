@@ -481,14 +481,18 @@ void problema18 (){
         }
 
         // PASO 2. Encuentramos el número más pequeño a la derecha de permutacion[indice] que sea mayor que permutacion[indice]
-        int indice2 = permutacion.length() - 1;
-        while (permutacion[indice2] <= permutacion[indice])
-            indice2--;
+        int indiceDelMayorMenor = indice+1;
 
-        // Intercambiamos permutacion[indice] y permutacion[indice2]
-        swap(permutacion[indice], permutacion[indice2]);
+        for (int indiceActual = indice+1; indiceActual < permutacion.length(); ++indiceActual){
+            if (permutacion[indiceActual] > permutacion[indice] && permutacion[indiceActual] < permutacion[indiceDelMayorMenor]){
+                indiceDelMayorMenor = indiceActual;
+            }
+        }
 
-        // Invertimos los dígitos a la derecha de permutacion[indice] para obtener la siguiente permutación
+        // PASO 3. Intercambiamos permutacion[indice] y permutacion[indiceDelMayorMenor]
+        swap(permutacion[indice], permutacion[indiceDelMayorMenor]);
+
+        // PASO 4. Invertimos los dígitos a la derecha de permutacion[indice] para obtener la siguiente permutación
         reverse(permutacion.begin() + indice + 1, permutacion.end());
     }
 
