@@ -1277,14 +1277,14 @@ void problema_12(){
     else{
         for (int i = mita; i >= 1; --i){
             if (N%i == 0){
-                esPrimo = true;
-                for (int j = 2; j*j <= i; j++) { // Tambien podríamos iterar hasta i <= num/2
+                esPrimo = true; //Asumir que es primo
+                for (int j = 2; j*j <= i; j++) { // Verificar si efectivamente lo es.
                     if (i % j == 0) {
                         esPrimo = false;
                         break;
                     }
                 }
-                if (esPrimo) {maximo = i; break;}
+                if (esPrimo) {maximo = i; break;} // Si despues de la verificacion sigue siendo primo.
             }
         }
     }
@@ -1331,13 +1331,13 @@ void problema_13(){
 void problema_14(){
     cout<<"\n       Palindromo mas grande que puede ser obtenido como un producto de dos numeros de 3 digitos.\n\n";
     int maxPalindromo = 0;
-    int num1 = 0, num2 = 0;
+    int num1 = 0, num2 = 0; // Almacenan los números cuyos productos generan el palíndromo más grande.
 
     // Iterar sobre todos los pares de números de 3 dígitos
     for (int i = 100; i <= 999; i++) {
         for (int j = i; j <= 999; j++) { // j empieza desde i para evitar duplicados
             int producto = i * j;
-            int temp = producto;
+            int temp = producto; //Una copia del producto, que se utilizará para comprobar si es un palíndromo.
             int inverso = 0;
 
             // Verificar si el producto es un palíndromo
