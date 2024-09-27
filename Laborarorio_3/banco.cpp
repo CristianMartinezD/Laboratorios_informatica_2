@@ -22,10 +22,14 @@ Cuenta *Banco::buscarCuenta(const string &cedula) {
 }
 
 void Banco::mostrarCuentas() const {
+    system("cls");
+    cout <<"\n\nLAS CUENTAS REGISTRADAS EN EL SISTEMA SON:\n\n";
     for (const auto& cuenta : cuentas) {
         cuenta.mostrarInfo();
         cout << "--------------------------" << endl;
     }
+    system("pause");
+    system("cls");
 }
 
 void Banco::cargarCuentasDesdeString(const string &datos) {

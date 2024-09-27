@@ -2,6 +2,12 @@
 #define FUNCIONES_H
 #include <string>
 #include "banco.h"
+#include <algorithm> //Para usar count()
+#include "cuenta.h"
+#include <vector>
+#include <bitset>
+#include <fstream>
+
 using namespace std;
 
 string convertirTEXTO_A_binario(string);
@@ -15,5 +21,6 @@ string leerArchivoPorLinea(string);
 int obtenerENTEROpositivo();
 int obtenerENTERO();
 void menuOperacionesBancarias(); void registrarUsuario(Banco&); void consultarSaldo(Banco&); void retirarDinero(Banco&);
+bool validarAdmin();
 
 #endif // FUNCIONES_H

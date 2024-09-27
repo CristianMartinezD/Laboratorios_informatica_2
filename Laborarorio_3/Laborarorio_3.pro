@@ -6,6 +6,7 @@ CONFIG -= qt
 SOURCES += \
         banco.cpp \
         cuenta.cpp \
+        funciones.cpp \
         main.cpp
 
 HEADERS += \
