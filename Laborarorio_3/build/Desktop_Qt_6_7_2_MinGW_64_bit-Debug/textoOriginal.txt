@@ -1,4 +1,0 @@
-Andrés
-Cuenta: 12345
-clave: 3470
-Mañana

@@ -1,23 +1,16 @@
-# include <iostream>
-# include <fstream>
+#include <iostream>
+#include <fstream>
+#include <limits> //Para limpiar el buffer.
 #include <vector>
-# include <bitset>
+#include <bitset>
 #include <string>
 #include <algorithm> //Para usar count()
+#include "cuenta.h"
+#include "banco.h"
+#include "funciones.h"
 
 using namespace std;
 
-string convertirTEXTO_A_binario(string);
-void escribirArchivo(string, string, bool);
-string invertir_bloque(const string&);
-string metodo1(const string&, int, string); //Recibe el binario que voy a procesar, n, y la acción que voy a realizar, ya sea codificar o decodificar.
-string metodo2(const string&, int, string);
-void EscribirArchivoBinario(const string&, const string&);
-//string leerArchivoPorCaracter(string);
-string leerArchivoPorLinea(string);
-int obtenerENTEROpositivo();
-int obtenerENTERO();
-void menuOperacionesBancarias(); void registrarUsuario(); void consultarSaldo(); void retirarDinero();
 
 
 int main()
@@ -99,9 +92,9 @@ int main()
                 break;
             }
 
-            case '3': menuOperacionesBancarias(); break;
+            case '3': {menuOperacionesBancarias(); break;}
 
-            default: {cout<<"\nNO INGRESASTE UNA OPCION VALIDA\n"; break;}
+            default: cout<<"\nNO INGRESASTE UNA OPCION VALIDA\n"; cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Limpiar el buffer
         }
 
         /* PAUSA Y LIMPIEZA DE PANTALLA ANTES DE MOSTRAR NUEVAMENTE EL MUNU */
@@ -336,7 +329,22 @@ string leerArchivoPorCaracter(string nombreArchivo)
 /* APLICACION */
 
 void menuOperacionesBancarias(){
-    system("cls"); cout <<"\n   BIENVENIDO AL BANCO.\n"; system("pause"); system("cls");
+    system("cls");
+
+    /* CARGAMOS LA BASE DE DATOS EN MEMORIA */
+
+    string binarioCod = convertirTEXTO_A_binario("baseDeDatos.txt");
+    string binarioDec = metodo1(binarioCod, 4, "decodificar");
+    string str_cuentas;
+    for (size_t i = 0; i < binarioDec.size(); i += 8) {
+        bitset<8> byte(binarioDec.substr(i, 8));
+        str_cuentas += (static_cast<unsigned char>(byte.to_ulong()));
+    }
+    cout<<str_cuentas<<endl;
+
+    Banco cuentas;
+    cuentas.cargarCuentasDesdeString(str_cuentas);
+    /* ------------------------------------------ */
 
     bool salir = false;
     while (salir == false) {
@@ -350,20 +358,102 @@ void menuOperacionesBancarias(){
         cout <<"INGRESA UNA DE LAS ANTERIORES OPCIONES (1,2,3, o 0): "; cin >> operacion;
 
         switch (operacion) {
-        case '1': registrarUsuario(); break;
-        case '2': consultarSaldo(); break;
-        case '3': retirarDinero(); break;
+        case '1': registrarUsuario(cuentas); break;
+        case '2': consultarSaldo(cuentas); break;
+        case '3': retirarDinero(cuentas); break;
         case '0': salir = true; break;
-        default:break;
+        default: cout <<"\nNO INGRESASTE UNA OPCION VALIDA\n"; cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Limpiar el buffer
         }
     }
 }
 
 
 
-void registrarUsuario(){}
-void consultarSaldo(){}
-void retirarDinero(){}
+void registrarUsuario(Banco& cuentas){
+    system("cls");
+    string claveAdmin;
+    cout <<"\nINGRESE LA CLAVE DE ADMINISTRADOR: "; cin >> claveAdmin;
+
+    string binarioClaveEncriptada = convertirTEXTO_A_binario("sudo.txt");
+    string binarioClaveDesencriptada = metodo1(binarioClaveEncriptada, 4, "decodificar");
+    string claveReal;
+
+    for (size_t i = 0; i < binarioClaveDesencriptada.size(); i += 8) {
+        bitset<8> byte(binarioClaveDesencriptada.substr(i, 8));
+        claveReal += (static_cast<unsigned char>(byte.to_ulong()));
+    }
+
+    string cedula, clave; double saldo;
+    if (claveAdmin == claveReal){
+        cout <<"\nBIENVENIDO ADMIN!\n";
+        cout <<"\nRegistremos el nuevo usuario.";
+        cout <<"\nCual es su cedula: "; cin >> cedula;
+        if (cuentas.buscarCuenta(cedula) == nullptr){
+            cout <<"\nCual es su clave: "; cin >> clave;
+            cout <<"\nCual es su saldo: "; cin >> saldo;
+            cuentas.agregarCuenta(Cuenta(cedula,clave,saldo),true);
+        }
+        else{cout <<"\nEse usuario ya esta registrado.\n\n";}
+
+    }
+    else cout <<"\nCLAVE ERRADA\n\n";
+
+    system("pause");
+    system("cls");
+}
+
+void consultarSaldo(Banco& cuentas){
+    string cedula, clave;
+    cout <<"\nAUTENTIFICACION.";
+    cout <<"\nIngresa tu cedula: "; cin >> cedula;
+
+    Cuenta *cuenta = cuentas.buscarCuenta(cedula);
+    if(cuenta != nullptr){
+        cout <<"\nIngresa tu clave: "; cin >> clave;
+        if(cuenta->getContrasena() == clave){
+            cout <<"\nTU SALDO ES: "<<cuenta->getSaldo()<<" COP - (1000 COP por esta consulta)"<<endl<<endl;
+            double nuevoSaldo = cuenta->getSaldo() - 1000;
+            cuenta->setSaldo(nuevoSaldo);
+            cuentas.escribirEnlaBase();
+        }
+        else cout <<"\nAUTENTIFICACION FALLIDA, CLAVE INCORRECTA.\n\n";
+    }
+    else cout <<"\nESA CUENTA NO EXISTE EN NUESTRO SISTEMA.\n\n";
+
+    system("pause");
+    system("cls");
+}
+
+void retirarDinero(Banco& cuentas){
+    string cedula, clave;
+    cout <<"\nAUTENTIFICACION.";
+    cout <<"\nIngresa tu cedula: "; cin >> cedula;
+
+    Cuenta *cuenta = cuentas.buscarCuenta(cedula);
+    if(cuenta != nullptr){
+        cout <<"\nIngresa tu clave: "; cin >> clave;
+        if(cuenta->getContrasena() == clave){
+            if (cuenta->getSaldo() >= 10000){
+                cout <<"\nCUANTO VAS A RETIRAR?...(su maximo retiro puede ser de "<<cuenta->getSaldo()<<" COP y su minimo 10000 COP)"<<endl;
+                double monto;
+                cout <<"\nDIGITA EL MONTO DE RETIRO: $ "; cin >> monto;
+                if (monto <= cuenta->getSaldo() && monto >= 10000){
+                    double nuevoSaldo = cuenta->getSaldo() - monto - 1000;
+                    cuenta->setSaldo(nuevoSaldo);
+                    cuentas.escribirEnlaBase();
+                    cout <<"\n\n        RETIRO EXITOSO!\nSe ha cobrado una tarifa de 1000 COP por este retiro\n\n";
+                }
+                else cout <<"\nNo puedes retirar ese valor\n\n";
+            }
+            else cout <<"\nNo tienes suficientes fondos para retirar, debes tener minimo 10000 COP\n\n";
+        }
+        else cout <<"\nAUTENTIFICACION FALLIDA, CLAVE INCORRECTA.\n\n";
+    }
+    else cout <<"\nESA CUENTA NO EXISTE EN NUESTRO SISTEMA.\n\n";
+
+    system("pause");
+    system("cls");
+}
 
 
 
