@@ -528,7 +528,7 @@ bool validarAdmin(){
     string claveAdmin;
     cout <<"\nINGRESE LA CLAVE DE ADMINISTRADOR: "; cin >> claveAdmin;
 
-    string binarioClaveEncriptada = convertirTEXTO_A_binario("sudo.txt");
+    string binarioClaveEncriptada = convertirTEXTO_A_binario("sudo.bin");
     string binarioClaveDesencriptada = metodo1(binarioClaveEncriptada, 4, "decodificar");
     string claveReal;
 
@@ -712,9 +712,7 @@ void Banco::escribirEnlaBase() {
         binarioSinCod += binario.to_string();
     }
 
-    // Aquí deberías llamar a la función 'metodo1' para codificar el binario
-    // Y la función 'EscribirArchivoBinario' para guardar en un archivo.
-    // Por ejemplo:
+
     string binarioCod = metodo1(binarioSinCod, 4, "codificar");
     EscribirArchivoBinario("baseDeDatos.txt", binarioCod);
 }
