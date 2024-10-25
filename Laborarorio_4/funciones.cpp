@@ -3,7 +3,7 @@
 #include <fstream>
 #include <sstream> /* Para usar stringstream y convertir lineas de texto en un flujo de tokens */
 #include <queue>
-#include <algorithm>  // Para usar reverse
+#include <algorithm>  // Para usar reverse y find
 
 int cargarTopoligiaDesdeUnTxt(string nombreArchivo, map<string, map<string, int>>& topologia, vector<string>& routerNames)
 {
@@ -83,11 +83,12 @@ struct NodoRuta { // Estructura para almacenar la información de las rutas y lo
 };
 
 
-void encontrarRutaMasCorta(const map<string, map<string, int>>& topologia, const string& origen, const string& destino, const vector<string>& routerNames) {
+string encontrarRutaMasCorta(const map<string, map<string, int>>& topologia, const string& origen, const string& destino, const vector<string>& routerNames, bool retornar) {
     //system("cls");
 
-    cout << "\nMatriz de adyacencia:\n";
-    imprimirMatrizAdyacencia(topologia, routerNames); // Imprimir la matriz de adyacencia
+    if (!retornar){cout << "\nMatriz de adyacencia:\n";
+        imprimirMatrizAdyacencia(topologia, routerNames); // Imprimir la matriz de adyacencia
+    }
 
     // Mapa para almacenar las distancias mínimas desde el origen
     map<string, int> distancias;
@@ -135,7 +136,7 @@ void encontrarRutaMasCorta(const map<string, map<string, int>>& topologia, const
     // Si no encontramos una ruta hacia el destino
     if (distancias[destino] == INT_MAX) {
         cout << "No hay ruta disponible entre " << origen << " y " << destino << endl;
-        return;
+        return "";
     }
 
     // Reconstruimos la ruta desde el destino al origen usando el mapa de predecesores
@@ -150,13 +151,27 @@ void encontrarRutaMasCorta(const map<string, map<string, int>>& topologia, const
     // Invertimos la ruta para mostrarla en el orden correcto
     reverse(ruta.begin(), ruta.end());
 
-    // Imprimimos la ruta y el peso total
-    cout << "La ruta mas corta para ir de " << origen << " a " << destino << " es: ";
-    for (size_t i = 0; i < ruta.size(); ++i) {
-        cout << ruta[i];
-        if (i != ruta.size() - 1) cout << "->";
+    if (!retornar){
+        // Imprimimos la ruta y el peso total
+        cout << "La ruta mas corta para ir de " << origen << " a " << destino << " es: ";
+        for (size_t i = 0; i < ruta.size(); ++i) {
+            cout << ruta[i];
+            if (i != ruta.size() - 1) cout << "->";
+        }
+        cout << ", con un peso de " << distancias[destino] << " unidades." << endl << endl;
+        return "";
     }
-    cout << ", con un peso de " << distancias[destino] << " unidades." << endl << endl;
+    else{
+        string RutaCorta = "";
+        for (size_t i = 0; i < ruta.size(); ++i) {
+            RutaCorta += ruta[i];
+            if (i != ruta.size() - 1) RutaCorta += "->";
+        }
+        if (origen.length() == 1)return "   " +destino + "    |         " + to_string( distancias[destino]) +"           |  " + RutaCorta +"\n";
+        else if (origen.length() == 2)return "  " +destino + "    |         " + to_string( distancias[destino]) +"           |  " + RutaCorta +"\n";
+        else if(origen.length() == 3 && distancias[destino] > 9) return " " +destino + "    |         " + to_string( distancias[destino]) +"          |  " + RutaCorta +"\n";
+        else return " " +destino + "    |         " + to_string( distancias[destino]) +"           |  " + RutaCorta +"\n";
+    }
 }
 
 
@@ -232,28 +247,121 @@ void AgregarEnrutador(map<string, map<string, int> > &topologia, vector<string> 
 {
     string nuevoRouter, ModoManual;
     cout << "\nCOMO SE LLAMARA EL NUEVO ENRUTADOR?: "; cin >> nuevoRouter;
-    cout << "\nQuieres que asignar manualmente los pesos de viajar a otro enrutador de la red?, si o no: "; cin >> ModoManual;
+    cout << "\nQuieres asignar manualmente los pesos de viajar a otro enrutador de la red?, si o no: "; cin >> ModoManual;
     routerNames.push_back(nuevoRouter);
 
-    if (ModoManual == "si"){
-        cout << "Hola";
+    topologia[nuevoRouter][nuevoRouter] = 0;
+    for (auto& destino : routerNames) {
+        if (nuevoRouter == destino) {topologia[nuevoRouter][destino] = 0; topologia[destino][nuevoRouter] = 0;}
+        else {
+            int peso;
+            if (ModoManual != "si") peso = -1 + (rand() % 21); //Pesos;
+            else {cout <<"\nCUAL SERA EL PESO DE LA CONEXION "<<nuevoRouter<<"-->"<<destino<<": "; cin >> peso;}
+            topologia[nuevoRouter][destino] = peso;
+            topologia[destino][nuevoRouter] = peso;
+            if (topologia[nuevoRouter][destino] == 0) {
+                topologia[nuevoRouter][destino] = -1;
+                topologia[destino][nuevoRouter] = -1;
+            }
+        }
     }
-    else {
-        topologia[nuevoRouter][nuevoRouter] = 0;
-        for (auto& destino : routerNames) {
-            if (nuevoRouter == destino) {topologia[nuevoRouter][destino] = 0; topologia[destino][nuevoRouter] = 0;}
-            else {
-                int peso = -1 + (rand() % 21); //Pesos
-                topologia[nuevoRouter][destino] = peso;
-                topologia[destino][nuevoRouter] = peso;
-                if (topologia[nuevoRouter][destino] == 0) {
-                    topologia[nuevoRouter][destino] = -1;
-                    topologia[destino][nuevoRouter] = -1;
+    if (ModoManual == "no") cout <<"\n\nENRUTADOR AGREGADO! LOS PESOS FUERON ASIGNADOS ALEATORIAMENTE\n\n";
+    else if (ModoManual != "si" && ModoManual != "no") cout <<"\n\nNO INGRESASTE UNA OPCION CORRECTA, POR LO TANTO SE ASIGNARON PESOS ALEATORIOS AL NUEVO ENRUTADOR AGREGADO\n\n";
+    else cout <<"\n\nENRUTADOR AGREGADO EXITOSAMENTE!\n\n";
+    system("pause");
+}
+
+
+
+
+
+void ImprimirTablaDeEnrutamient(map<string, map<string, int> > &topologia, vector<string> &routerNames)
+{
+    string origen, destino;
+    cout << "\nESTOS SON LOS ENRUTADORES DE ESTA RED:\n";
+    for (auto& router : routerNames){
+        cout <<router<<endl;
+    }
+
+    cout << "A CUAL DE ESOS ENRUTADORES LE QUIERES VER SU TABLA DE ENRUTAMIENTO: "; cin >> origen;
+    string tabla = "";
+    if (find(routerNames.begin(), routerNames.end(), origen) != routerNames.end()) {
+        cout <<"\nLa tabla de enrutamiento de "<<origen<<" es:\n";
+        cout<<"\nDESTINO | DISTANCIA MAS CORTA | RUTA\n";
+        for (auto& destino : routerNames){
+            tabla += encontrarRutaMasCorta(topologia, origen, destino, routerNames,true);
+        }
+        cout<<tabla<<endl;
+    }
+    else {cout <<"\nEl Enrutador que ingresaste no existe en esta red\n\n";}
+    system("pause");
+}
+
+
+
+
+
+void EliminarEnrutador(map<string, map<string, int> > &topologia, vector<string> &routerNames)
+{
+    string Eliminar;
+    cout << "\nESTOS SON LOS ENRUTADORES DE ESTA RED:\n";
+    for (auto& router : routerNames){
+        cout <<router<<endl;
+    }
+    cout << "A CUAL DE ESOS ENRUTADORES QUIERES ELIMINAR: "; cin >> Eliminar;
+    if (find(routerNames.begin(), routerNames.end(), Eliminar) != routerNames.end()) {
+
+        for (auto& routerOrigen : routerNames){
+            topologia[routerOrigen].erase(Eliminar); //Borramos la columna donde Eliminar el destino
+        }
+        topologia.erase(Eliminar); //Borramos la columna donde Eliminar el origen
+        cout<<"\nEL ENRUTADOR "<<Eliminar<<" HA SIDO ELIMINADO DE LA RED!";
+        cout<<"\nLa nueva matriz de adyacencia es:\n";
+        routerNames.erase(remove(routerNames.begin(), routerNames.end(), Eliminar), routerNames.end());
+        imprimirMatrizAdyacencia(topologia, routerNames);
+    }
+    else {cout <<"\nEl Enrutador que ingresaste no existe en esta red\n\n";}
+    cout<<endl;
+    system("pause");
+}
+
+
+
+
+void cambiarPeso(map<string, map<string, int> > &topologia, vector<string> &routerNames)
+{
+    string opcion;
+    cout << "\nQUIERES CAMBIAR EL PESO DE CONEXION ENTRE DOS ENRUTADORES, O QUE SE CAMBIEN TODOS LOS PESOS AUTOMATICAMENTE?";
+    cout << "\n\n1. CAMBIAR EL PESO ENTRE DOS ENRUTADORES";
+    cout << "\n2. CAMBIAR PESO DE TODOS, AUTOMATICAMENTE";
+    cout << "\n   INGRESA 1 O 2: ";  cin >> opcion;
+
+    if (opcion == "1"){
+        string enrutador1, enrutador2;
+        cout <<"\nIngresa el nombre del primer enrutador: "; cin >> enrutador1;
+        cout <<"\nIngresa el nombre del segundo enrutador: "; cin >> enrutador2;
+        if (find(routerNames.begin(), routerNames.end(), enrutador1) != routerNames.end() &&
+            find(routerNames.begin(), routerNames.end(), enrutador2) != routerNames.end()) {
+            int peso;
+            cout <<"\nCUAL EL ES NUEVO PESO QUE LE ASIGNARAS A LA CONEXION ENTRE ESTOS DOS ENRUTADORES: "; cin >> peso;
+            topologia[enrutador1][enrutador2] = peso;
+            topologia[enrutador2][enrutador1] = peso;
+            cout <<"\n\nEL PESO DE LA CONEXION ENTRE ESTOS DOS ENRUTADORES HA SIDO CAMBIADO!\n\n";
+        }
+        else {cout <<"\nUno de los Enrutadores que ingresaste no existe en esta red\n\n";}
+    }
+    else{
+        for (auto& origen : routerNames) {
+            for (auto& destino : routerNames) {
+                if (origen == destino) topologia[origen][destino] = 0;
+                else {
+                    topologia[origen][destino] = -1 + (rand() % 21); //Pesos
+                    if (topologia[origen][destino] == 0) topologia[origen][destino] = -1;
                 }
             }
         }
-        if (ModoManual == "no") cout <<"\n\nENRUTADOR AGREGADO! LOS PESOS FUERON ASIGNADOS ALEATORIAMENTE\n\n";
-        else cout <<"\n\nNO INGRESASTE UNA OPCION CORRECTA, POR LO TANTO SE ASIGNARON PESOS ALEATORIOS AL NUEVO ENRUTADOR AGREGADO\n\n";
+        cout <<"\n\nEL PESO DE LAS CONEXIONES EN TODA LA RED HA SIDO CAMBIADO!\n\n";
     }
+
     system("pause");
 }

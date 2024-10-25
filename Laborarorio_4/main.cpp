@@ -74,13 +74,15 @@ int menuDeLaRed(map<string, map<string, map<string, int>>>& Redes, map <string, 
             system("cls");
             cout<<"\nMENU DE LA "<<nombreRed;
             cout<<"\nQue quieres realizar:";
-            cout<<"\n1. Ver la matriz de adyacencia de esta red\n2. Obtener la ruta mas corta entre dos enrutadores\n3. Agregar Enrutador\n4. Eliminar Enrutador";
-            cout<<"\n5. Cambiar peso de las conexiones (se cambian automaticamente)\n9. Volver al menu principal\n0. SALIR";
+            cout<<"\n1. Ver la matriz de adyacencia de esta red\n2. Imprimir la tabla de enrutamiento de un Enrutador";
+            cout <<"\n3. Obtener la ruta mas corta entre dos enrutadores\n4. Agregar Enrutador\n5. Eliminar Enrutador";
+            cout<<"\n6. Cambiar peso de las conexiones\n9. Volver al menu principal\n0. SALIR";
             cout<<"\nINGRESA UNA DE LAS ANTERIORES OPCIONES: "; cin >> opcion;
 
             switch (opcion) {
             case 1: {imprimirMatrizAdyacencia(Redes[nombreRed], routerNames[nombreRed]); system("pause"); break;}
-            case 2: {
+            case 2: {ImprimirTablaDeEnrutamient(Redes[nombreRed], routerNames[nombreRed]); break;}
+            case 3: {
                 string origen, destino;
                 cout << "Cual es el Enrutador Origen: "; cin >> origen;
                 cout << "Cual es el Enrutador Destino: "; cin >> destino;
@@ -94,8 +96,16 @@ int menuDeLaRed(map<string, map<string, map<string, int>>>& Redes, map <string, 
                 system("pause");
                 break;
             }
-            case 3: {
-                AgregarEnrutador(Redes[nombreRed], routerNames[nombreRed]);
+            case 4: {
+                AgregarEnrutador(Redes[nombreRed], routerNames[nombreRed]); //Debo terminar esta parte
+                break;
+            }
+            case 5: {
+                EliminarEnrutador(Redes[nombreRed], routerNames[nombreRed]);
+                break;
+            }
+            case 6: {
+                cambiarPeso(Redes[nombreRed], routerNames[nombreRed]);
                 break;
             }
             case 9: {return 9;}
