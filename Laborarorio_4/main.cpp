@@ -24,7 +24,7 @@ int main() {
 
     AgregarRedAleatoria(Redes["Red3"], routerNames["Red3"]);
 
-    int opcion;
+    int opcion; string entrada;
     do {
         system("cls");
         cout<<"\nEN EL SISTEMA HAY "<<Redes.size()<<" REDES DISPONIBLES:\n";
@@ -35,7 +35,9 @@ int main() {
         cout<<"\n2. Quieres eliminar una de esas redes";
         cout<<"\n3. Quieres agregar otra Red aleatoria al sistema";
         cout<<"\n0. SALIR";
-        cout<<"\nINGREA UNA OPCION (1, 2, 3. 0): "; cin >> opcion;
+        cout<<"\nINGREA UNA OPCION (1, 2, 3. 0): "; cin >> entrada;
+        if (entrada != "0" && entrada != "1" && entrada != "2" && entrada != "3") opcion = 100;
+        else opcion = stoi(entrada);
 
         switch (opcion) {
         case 1: {opcion = menuDeLaRed(Redes, routerNames); break;}
@@ -69,7 +71,7 @@ int menuDeLaRed(map<string, map<string, map<string, int>>>& Redes, map <string, 
     cout<<"\nA CUAL DE LAS ANTERIORES REDES QUIERES ENTRAR? ESCRIBE EL NOMBRE: "; cin >> nombreRed;
 
     if (Redes.find(nombreRed) != Redes.end()){
-        int opcion;
+        int opcion; string entrada;
         do {
             system("cls");
             cout<<"\nMENU DE LA "<<nombreRed;
@@ -77,7 +79,9 @@ int menuDeLaRed(map<string, map<string, map<string, int>>>& Redes, map <string, 
             cout<<"\n1. Ver la matriz de adyacencia de esta red\n2. Imprimir la tabla de enrutamiento de un Enrutador";
             cout <<"\n3. Obtener la ruta mas corta entre dos enrutadores\n4. Agregar Enrutador\n5. Eliminar Enrutador";
             cout<<"\n6. Cambiar peso de las conexiones\n9. Volver al menu principal\n0. SALIR";
-            cout<<"\nINGRESA UNA DE LAS ANTERIORES OPCIONES: "; cin >> opcion;
+            cout<<"\nINGRESA UNA DE LAS ANTERIORES OPCIONES: "; cin >> entrada;
+            if (entrada != "0" && entrada != "1" && entrada != "2" && entrada != "3" && entrada != "4" && entrada != "5" && entrada != "6" && entrada != "9") opcion = 100;
+            else opcion = stoi(entrada);
 
             switch (opcion) {
             case 1: {imprimirMatrizAdyacencia(Redes[nombreRed], routerNames[nombreRed]); system("pause"); break;}
@@ -97,7 +101,7 @@ int menuDeLaRed(map<string, map<string, map<string, int>>>& Redes, map <string, 
                 break;
             }
             case 4: {
-                AgregarEnrutador(Redes[nombreRed], routerNames[nombreRed]); //Debo terminar esta parte
+                AgregarEnrutador(Redes[nombreRed], routerNames[nombreRed]);
                 break;
             }
             case 5: {
@@ -112,6 +116,7 @@ int menuDeLaRed(map<string, map<string, map<string, int>>>& Redes, map <string, 
             case 0: {return 0;}
 
             default:
+                cout << "\nHAS INGRESADO UNA OPCION INVALIDA, INTENTALO DE NUEVO!\n\n"; system("pause");
                 break;
             }
         } while (opcion != 9 && opcion != 0);
