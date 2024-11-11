@@ -1,0 +1,20 @@
+<RCC>
+    <qresource prefix="/">
+        <file>imagenes/a0.png</file>
+        <file>imagenes/a1.png</file>
+        <file>imagenes/a2.png</file>
+        <file>imagenes/d0.png</file>
+        <file>imagenes/d1.png</file>
+        <file>imagenes/d2.png</file>
+        <file>imagenes/f0.png</file>
+        <file>imagenes/f1.png</file>
+        <file>imagenes/f2.png</file>
+        <file>imagenes/i0.png</file>
+        <file>imagenes/i1.png</file>
+        <file>imagenes/i2.png</file>
+        <file>imagenes/rueda.png</file>
+        <file>imagenes/solido.png</file>
+        <file>imagenes/destruible.png</file>
+        <file>imagenes/bomba.png</file>
+    </qresource>
+</RCC>
