@@ -11,6 +11,7 @@
 #include <QKeyEvent>
 #include <QRandomGenerator>
 #include <QResizeEvent>
+#include <QMessageBox>
 
 
 QT_BEGIN_NAMESPACE
@@ -28,6 +29,7 @@ public:
     void crearLaberinto();
     void ActualizarImagen(QString direccion);
     bool tocarPared();
+    void tocarEnemigo();
     void moverEnemigos();
     void colocarBomba();
     ~MainWindow();
@@ -59,6 +61,9 @@ private:
 
     QList<QGraphicsPixmapItem*> bombasActivas;
     int maxBombas = 3; // Número máximo de bombas simultáneas
+
+    QGraphicsTextItem *LabelReloj, *LabelVidas, *LabelPuntaje;
+    int reloj = 150, vidas = 10, puntaje = 0;
 
 
     void resizeGraphicsView() {

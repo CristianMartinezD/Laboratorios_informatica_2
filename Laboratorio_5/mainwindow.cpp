@@ -1,6 +1,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include <QDebug>
+#include <QProcess>
+
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow)
 {
@@ -58,7 +60,11 @@ void MainWindow::keyPressEvent(QKeyEvent *e)
         }
         break;
 
-    case Qt::Key_S:{colocarBomba();break;}
+    case Qt::Key_S:{
+        colocarBomba();
+        TeclaValida = false;
+        break;
+    }
 
     default:
         TeclaValida = false;
@@ -73,6 +79,7 @@ void MainWindow::keyPressEvent(QKeyEvent *e)
         imagenActual = spritesBom[ITEM];
         ++ITEM;
     }
+    else imagenActual->setZValue(1); //Para mantener la imagen al frente
 }
 
 
@@ -96,37 +103,6 @@ void MainWindow::crearLaberinto()
         {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
     };
 
-    for (int i = 0; i < 11; ++i){
-        for (int j = 0; j < 21; ++j){
-
-            if (configLab[i][j] == 1) {
-                BloquesSolidos.append(new QGraphicsPixmapItem(QPixmap(":/imagenes/solido.png").scaled(67, 67, Qt::KeepAspectRatio, Qt::SmoothTransformation)));
-                BloquesSolidos.back()->setPos(j*67,i*67);
-                escenaLaberinto->addItem(BloquesSolidos.back());
-            }
-            else if(configLab[i][j] == 0){
-                if ((QRandomGenerator::global()->bounded(1, 101))%2 == 0){ // Genera un número entre 1 y 100 y le saco %2
-                    BloquesDestruibles.append(new QGraphicsPixmapItem(QPixmap(":/imagenes/destruible.png").scaled(67, 67, Qt::KeepAspectRatio, Qt::SmoothTransformation)));
-                    BloquesDestruibles.back()->setPos(j*67,i*67);
-                    escenaLaberinto->addItem(BloquesDestruibles.back());
-                }
-            }
-            else if(configLab[i][j] == 5){
-                escenaLaberinto->addRect(j * 67, i * 67, 67, 77, QPen(Qt::NoPen), QBrush(QColor(101, 67, 33)));
-            }
-        }
-    }
-
-    QGraphicsTextItem *texto1 = escenaLaberinto->addText("CRONOM", QFont("Arial", 20, QFont::Bold));
-    texto1->setDefaultTextColor(Qt::white);
-    texto1->setPos(80, 18);
-    QGraphicsTextItem *texto2 = escenaLaberinto->addText("VIDAS", QFont("Arial", 20, QFont::Bold));
-    texto2->setDefaultTextColor(Qt::green);
-    texto2->setPos(690, 18);
-    QGraphicsTextItem *texto3 = escenaLaberinto->addText("PUNTOS", QFont("Arial", 20, QFont::Bold));
-    texto3->setDefaultTextColor(Qt::yellow);
-    texto3->setPos(1200, 18);
-
 
 
     // Crear Enemigos
@@ -136,15 +112,15 @@ void MainWindow::crearLaberinto()
         QPixmap pixmap(":/imagenes/rueda.png");
         if (i == 0){
             Enemigo->setPixmap(pixmap.scaled(50, 50, Qt::KeepAspectRatio, Qt::SmoothTransformation));
-            Enemigo->setPos(90, 344);
+            //Enemigo->setPos(90, 344);
         }
         if (i == 1){
             Enemigo->setPixmap(pixmap.scaled(50, 50, Qt::KeepAspectRatio, Qt::SmoothTransformation));
-            Enemigo->setPos(950, 210);
+            //Enemigo->setPos(950, 210);
         }
         if (i == 2){
             Enemigo->setPixmap(pixmap.scaled(45, 45, Qt::KeepAspectRatio, Qt::SmoothTransformation));
-            Enemigo->setPos(745, 267);
+            //Enemigo->setPos(745, 267);
         }
 
         escenaLaberinto->addItem(Enemigo);
@@ -152,7 +128,47 @@ void MainWindow::crearLaberinto()
     }
 
 
-    // Configurar el temporizador para mover los enemigos
+
+    // RELLENAR LABERINTO //
+
+    int fila1 = QRandomGenerator::global()->bounded(3, 10);
+    if (fila1%2 == 0) fila1 += 1;
+    bool pintar1 = true, pintar2 = true, pintar3 = true;
+    int fila2 = QRandomGenerator::global()->bounded(3, 10);
+    if (fila2%2 == 0) fila2 += 1;
+    int columna = QRandomGenerator::global()->bounded(1, 20);
+    if (columna%2 == 0) columna += 1;
+
+    for (int i = 0; i < 11; ++i){
+        for (int j = 0; j < 21; ++j){
+
+            if(i == fila1 && j > 0 && j < 7){if(pintar1) Enemigos.at(0)->setPos(j * 67, i * 67); pintar1 = false;} //Crear camino enemigo 1
+            else if(i == fila2 && j > 13 && j < 20){if(pintar2) Enemigos.at(1)->setPos(j * 67, i * 67); pintar2 = false;} //Crear camino enemigo 3
+            else if(j == columna && i > 2 && i < 7) {if(pintar3) Enemigos.at(2)->setPos(j * 67 +9, i * 67); pintar3 = false;} //Crear camino enemigo 2
+
+            else{
+                if (configLab[i][j] == 1) {
+                    BloquesSolidos.append(new QGraphicsPixmapItem(QPixmap(":/imagenes/solido.png").scaled(67, 67, Qt::KeepAspectRatio, Qt::SmoothTransformation)));
+                    BloquesSolidos.back()->setPos(j*67,i*67);
+                    escenaLaberinto->addItem(BloquesSolidos.back());
+                }
+                else if(configLab[i][j] == 0){
+                    if ((QRandomGenerator::global()->bounded(1, 101))%2 == 0){ // Genera un número entre 1 y 100 y le saco %2
+                        BloquesDestruibles.append(new QGraphicsPixmapItem(QPixmap(":/imagenes/destruible.png").scaled(67, 67, Qt::KeepAspectRatio, Qt::SmoothTransformation)));
+                        BloquesDestruibles.back()->setPos(j*67,i*67);
+                        escenaLaberinto->addItem(BloquesDestruibles.back());
+                    }
+                }
+                else if(configLab[i][j] == 5){
+                    escenaLaberinto->addRect(j * 67, i * 67, 67, 77, QPen(Qt::NoPen), QBrush(QColor(101, 67, 33)));
+                }
+            }
+        }
+    }
+
+
+
+    // Configuramos ul temporizador para mover los enemigos
     timerEnemigos = new QTimer(this);
     connect(timerEnemigos, &QTimer::timeout, this, &MainWindow::moverEnemigos);
     timerEnemigos->start(50);
@@ -181,6 +197,18 @@ void MainWindow::crearLaberinto()
     escenaLaberinto->addItem(spritesBom[3]);
     imagenActual = spritesBom[3];
 
+
+    // LABELS PARA MOSTRAR ESTADISTICAS DE LAS PARTIDAS //
+    LabelReloj = escenaLaberinto->addText("TIEMPO RESTANTE 150", QFont("Arial", 20, QFont::Bold));
+    LabelReloj->setDefaultTextColor(Qt::white);
+    LabelReloj->setPos(80, 18);
+    LabelVidas = escenaLaberinto->addText("VIDAS 10", QFont("Arial", 20, QFont::Bold));
+    LabelVidas->setDefaultTextColor(Qt::green);
+    LabelVidas->setPos(690, 18);
+    LabelPuntaje = escenaLaberinto->addText("PUNTOS 0", QFont("Arial", 20, QFont::Bold));
+    LabelPuntaje->setDefaultTextColor(Qt::yellow);
+    LabelPuntaje->setPos(1200, 18);
+
 }
 
 
@@ -205,11 +233,38 @@ bool MainWindow::tocarPared()
     return tocoLaPared;
 }
 
+void MainWindow::tocarEnemigo()
+{
+    for(auto iter = Enemigos.begin(); iter < Enemigos.end(); ++iter){
+        if(imagenActual->collidesWithItem(*iter)){
+            --vidas;
+            LabelVidas->setPlainText("VIDAS " + QString::number(vidas));
+            if(vidas == 0){
+                timerEnemigos->stop();
+                QMessageBox msgBox;
+                msgBox.setWindowTitle("PERDISTE");
+                msgBox.setText("¿Quieres empezar de nuevo?");
+                msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+                msgBox.setDefaultButton(QMessageBox::Yes);
+                int reply = msgBox.exec();
+                if (reply == QMessageBox::Yes) {
+                    QApplication::quit();
+                    QProcess::startDetached(QApplication::applicationFilePath(), QStringList());
+                } else {
+                    QApplication::quit();
+                }
+            }
+        }
+    }
+}
 
 
-int contador = 0;
+
+
 void MainWindow::moverEnemigos()
 {
+    static int contador = 0, contador2 = 0;
+    tocarEnemigo(); //Verificamos si se estan tocando el principal con los enemigos
 
     for (int i = 0; i < Enemigos.size(); ++i) {
         static bool cambiarDireccionDelMovimiento;
@@ -217,16 +272,36 @@ void MainWindow::moverEnemigos()
         else if (contador >= 300) cambiarDireccionDelMovimiento = false;
         if (cambiarDireccionDelMovimiento){
             contador += 5;
-            Enemigos[0]->setPos(Enemigos[0]->x()+5, Enemigos[0]->y());
-            Enemigos[1]->setPos(Enemigos[1]->x()+5, Enemigos[1]->y());
-            Enemigos[2]->setPos(Enemigos[2]->x(), Enemigos[2]->y()+2.6);
+            Enemigos.at(0)->setPos(Enemigos.at(0)->x()+5, Enemigos.at(0)->y());
+            Enemigos.at(1)->setPos(Enemigos.at(1)->x()+5, Enemigos.at(1)->y());
+            Enemigos.at(2)->setPos(Enemigos.at(2)->x(), Enemigos.at(2)->y()+2.6);
         }
         else{
             contador -= 5;
-            Enemigos[0]->setPos(Enemigos[0]->x()-5, Enemigos[0]->y());
-            Enemigos[1]->setPos(Enemigos[1]->x()-5, Enemigos[1]->y());
-            Enemigos[2]->setPos(Enemigos[2]->x(), Enemigos[2]->y()-2.6);
+            Enemigos.at(0)->setPos(Enemigos.at(0)->x()-5, Enemigos.at(0)->y());
+            Enemigos.at(1)->setPos(Enemigos.at(1)->x()-5, Enemigos.at(1)->y());
+            Enemigos.at(2)->setPos(Enemigos.at(2)->x(), Enemigos.at(2)->y()-2.6);
         }
+    }
+
+    // MEDIMOS EL TIEMPO DE JUEGO //
+    ++contador2;
+    if(contador2 == 20){
+        if (reloj >= 0){
+            LabelReloj->setPlainText("TIEMPO RESTANTE " + QString::number(reloj));
+        }
+        else{
+            QMessageBox::StandardButton reply;
+            reply = QMessageBox::question(this, "PERDISTE", "¿Quieres empezar de nuevo?", QMessageBox::Yes | QMessageBox::No);
+            if (reply == QMessageBox::Yes) {
+                QApplication::quit(); // Cierra la aplicación
+                QProcess::startDetached(QApplication::applicationFilePath(), QStringList()); // La reinicia
+            } else {
+                QApplication::quit(); // Cierra todo el programa
+            }
+        }
+        --reloj;
+        contador2 = 0;
     }
 }
 
@@ -252,23 +327,41 @@ void MainWindow::colocarBomba() {
         QRectF areaExplosion(bomba->x() - 50, bomba->y() - 50, 150, 150);
         QList<QGraphicsItem*> itemsAfectados = escenaLaberinto->items(areaExplosion);
 
+
         // Recorremos los elementos afectados para aplicar la lógica de explosión
         for (QGraphicsItem* item : itemsAfectados) {
             if (BloquesDestruibles.contains(static_cast<QGraphicsPixmapItem*>(item))) {
                 escenaLaberinto->removeItem(item);
                 BloquesDestruibles.removeOne(static_cast<QGraphicsPixmapItem*>(item));
                 delete item;
+                puntaje += 5+reloj;
+                LabelPuntaje->setPlainText("PUNTOS " + QString::number(puntaje));
             }
-            else if (Enemigos.contains(static_cast<QGraphicsPixmapItem*>(item))) {
+            else if (Enemigos[0] == item || Enemigos[1] == item || Enemigos[2] == item) {
                 escenaLaberinto->removeItem(item);
-                Enemigos.removeOne(static_cast<QGraphicsPixmapItem*>(item));
-                delete item;
+                puntaje += 10+reloj;
+                LabelPuntaje->setPlainText("PUNTOS " + QString::number(puntaje));
             }
-            else if (item == imagenActual) {
-                qDebug() << "El personaje ha sido afectado por la explosión.";
+            else if (item == imagenActual) { // SI LA BOMBA AFECTA AL PERSONAJE PRINCIPAL //
+                --vidas;
+                LabelVidas->setPlainText("VIDAS " + QString::number(vidas));
+                if(vidas == 0){
+                    timerEnemigos->stop();
+                    QMessageBox msgBox;
+                    msgBox.setWindowTitle("PERDISTE");
+                    msgBox.setText("¿Quieres empezar de nuevo?");
+                    msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+                    msgBox.setDefaultButton(QMessageBox::Yes);
+                    int reply = msgBox.exec();
+                    if (reply == QMessageBox::Yes) {
+                        QApplication::quit();
+                        QProcess::startDetached(QApplication::applicationFilePath(), QStringList());
+                    } else {
+                        QApplication::quit();
+                    }
+                }
             }
         }
-
 
 
         // Removemos la bomba después de la explosión

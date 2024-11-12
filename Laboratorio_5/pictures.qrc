@@ -16,5 +16,6 @@
         <file>imagenes/solido.png</file>
         <file>imagenes/destruible.png</file>
         <file>imagenes/bomba.png</file>
+        <file>imagenes/bomberman.mp3</file>
     </qresource>
 </RCC>
