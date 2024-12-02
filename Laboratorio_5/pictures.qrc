@@ -17,5 +17,10 @@
         <file>imagenes/destruible.png</file>
         <file>imagenes/bomba.png</file>
         <file>imagenes/bomberman.mp3</file>
+        <file>imagenes/explosion.wav</file>
+        <file>imagenes/exp1.png</file>
+        <file>imagenes/exp2.png</file>
+        <file>imagenes/exp4.png</file>
+        <file>imagenes/expl3.png</file>
     </qresource>
 </RCC>

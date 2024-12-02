@@ -14,6 +14,18 @@ MainWindow::MainWindow(QWidget *parent)
     crearLaberinto();
     ui->graphicsView->setScene(escenaLaberinto);
 
+    musicaFondo = new QMediaPlayer(this);
+    musicaFondo->setSource(QUrl("qrc:/imagenes/bomberman.mp3"));
+    volumen = new QAudioOutput(this);
+    volumen->setVolume(1.0);
+    musicaFondo->setAudioOutput(volumen);
+    musicaFondo->setLoops(QMediaPlayer::Infinite);
+    musicaFondo->play();
+
+    audioExplocion = new QMediaPlayer(this);
+    volumen1 = new QAudioOutput(this);
+    volumen1->setVolume(1.0);
+
 }
 
 
@@ -171,7 +183,7 @@ void MainWindow::crearLaberinto()
     // Configuramos ul temporizador para mover los enemigos
     timerEnemigos = new QTimer(this);
     connect(timerEnemigos, &QTimer::timeout, this, &MainWindow::moverEnemigos);
-    timerEnemigos->start(50);
+    timerEnemigos->start(25);
 
 
 
@@ -197,6 +209,17 @@ void MainWindow::crearLaberinto()
     escenaLaberinto->addItem(spritesBom[3]);
     imagenActual = spritesBom[3];
 
+
+    // CARGAR SPRITES DE EXPLOSION //
+    imgExplosion.append(new QGraphicsPixmapItem ((QPixmap(":/imagenes/exp1.png").scaled(150, 150, Qt::KeepAspectRatio, Qt::SmoothTransformation))));
+    imgExplosion.append(new QGraphicsPixmapItem ((QPixmap(":/imagenes/exp2.png").scaled(150, 150, Qt::KeepAspectRatio, Qt::SmoothTransformation))));
+    //imgExplosion.append(new QGraphicsPixmapItem ((QPixmap(":/imagenes/exp3.png").scaled(150, 150, Qt::KeepAspectRatio, Qt::SmoothTransformation))));
+    imgExplosion.append(new QGraphicsPixmapItem ((QPixmap(":/imagenes/exp4.png").scaled(150, 150, Qt::KeepAspectRatio, Qt::SmoothTransformation))));
+
+    for (int i = 0; i < 3; ++i) {
+        imgExplosion[i]->setVisible(false);  // Establecer los ítems como invisibles inicialmente
+        escenaLaberinto->addItem(imgExplosion[i]);  // Agregar los ítems a la escena
+    }
 
     // LABELS PARA MOSTRAR ESTADISTICAS DE LAS PARTIDAS //
     LabelReloj = escenaLaberinto->addText("TIEMPO RESTANTE 150", QFont("Arial", 20, QFont::Bold));
@@ -236,22 +259,24 @@ bool MainWindow::tocarPared()
 void MainWindow::tocarEnemigo()
 {
     for(auto iter = Enemigos.begin(); iter < Enemigos.end(); ++iter){
-        if(imagenActual->collidesWithItem(*iter)){
-            --vidas;
-            LabelVidas->setPlainText("VIDAS " + QString::number(vidas));
-            if(vidas == 0){
-                timerEnemigos->stop();
-                QMessageBox msgBox;
-                msgBox.setWindowTitle("PERDISTE");
-                msgBox.setText("¿Quieres empezar de nuevo?");
-                msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-                msgBox.setDefaultButton(QMessageBox::Yes);
-                int reply = msgBox.exec();
-                if (reply == QMessageBox::Yes) {
-                    QApplication::quit();
-                    QProcess::startDetached(QApplication::applicationFilePath(), QStringList());
-                } else {
-                    QApplication::quit();
+        if (escenaLaberinto->items().contains(*iter)){
+            if(imagenActual->collidesWithItem(*iter)){
+                --vidas;
+                LabelVidas->setPlainText("VIDAS " + QString::number(vidas));
+                if(vidas == 0){
+                    timerEnemigos->stop();
+                    QMessageBox msgBox;
+                    msgBox.setWindowTitle("PERDISTE");
+                    msgBox.setText("¿Quieres empezar de nuevo?");
+                    msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+                    msgBox.setDefaultButton(QMessageBox::Yes);
+                    int reply = msgBox.exec();
+                    if (reply == QMessageBox::Yes) {
+                        QApplication::quit();
+                        QProcess::startDetached(QApplication::applicationFilePath(), QStringList());
+                    } else {
+                        QApplication::quit();
+                    }
                 }
             }
         }
@@ -266,27 +291,27 @@ void MainWindow::moverEnemigos()
     static int contador = 0, contador2 = 0;
     tocarEnemigo(); //Verificamos si se estan tocando el principal con los enemigos
 
-    for (int i = 0; i < Enemigos.size(); ++i) {
-        static bool cambiarDireccionDelMovimiento;
-        if (contador <= 0) cambiarDireccionDelMovimiento = true;
-        else if (contador >= 300) cambiarDireccionDelMovimiento = false;
-        if (cambiarDireccionDelMovimiento){
-            contador += 5;
-            Enemigos.at(0)->setPos(Enemigos.at(0)->x()+5, Enemigos.at(0)->y());
-            Enemigos.at(1)->setPos(Enemigos.at(1)->x()+5, Enemigos.at(1)->y());
-            Enemigos.at(2)->setPos(Enemigos.at(2)->x(), Enemigos.at(2)->y()+2.6);
-        }
-        else{
-            contador -= 5;
-            Enemigos.at(0)->setPos(Enemigos.at(0)->x()-5, Enemigos.at(0)->y());
-            Enemigos.at(1)->setPos(Enemigos.at(1)->x()-5, Enemigos.at(1)->y());
-            Enemigos.at(2)->setPos(Enemigos.at(2)->x(), Enemigos.at(2)->y()-2.6);
-        }
+
+    static bool cambiarDireccionDelMovimiento;
+    if (contador <= 0) cambiarDireccionDelMovimiento = true;
+    else if (contador >= 300) cambiarDireccionDelMovimiento = false;
+    if (cambiarDireccionDelMovimiento){
+        contador += 5;
+        if (Enemigos.at(0)->scene() == escenaLaberinto) Enemigos.at(0)->setPos(Enemigos.at(0)->x()+5, Enemigos.at(0)->y());
+        if (Enemigos.at(1)->scene() == escenaLaberinto) Enemigos.at(1)->setPos(Enemigos.at(1)->x()+5, Enemigos.at(1)->y());
+        if (Enemigos.at(2)->scene() == escenaLaberinto) Enemigos.at(2)->setPos(Enemigos.at(2)->x(), Enemigos.at(2)->y()+2.6);
     }
+    else{
+        contador -= 5;
+        if (Enemigos.at(0)->scene() == escenaLaberinto) Enemigos.at(0)->setPos(Enemigos.at(0)->x()-5, Enemigos.at(0)->y());
+        if (Enemigos.at(1)->scene() == escenaLaberinto) Enemigos.at(1)->setPos(Enemigos.at(1)->x()-5, Enemigos.at(1)->y());
+        if (Enemigos.at(2)->scene() == escenaLaberinto) Enemigos.at(2)->setPos(Enemigos.at(2)->x(), Enemigos.at(2)->y()-2.6);
+    }
+
 
     // MEDIMOS EL TIEMPO DE JUEGO //
     ++contador2;
-    if(contador2 == 20){
+    if(contador2 == 40){
         if (reloj >= 0){
             LabelReloj->setPlainText("TIEMPO RESTANTE " + QString::number(reloj));
         }
@@ -304,7 +329,6 @@ void MainWindow::moverEnemigos()
         contador2 = 0;
     }
 }
-
 
 
 
@@ -365,15 +389,35 @@ void MainWindow::colocarBomba() {
 
 
         // Removemos la bomba después de la explosión
+        QPointF posicion = bomba->pos();
         escenaLaberinto->removeItem(bomba);
         bombasActivas.removeOne(bomba);
         delete bomba;
+        explosion(posicion);
     });
 }
 
 
 
 
+
+void MainWindow::explosion(QPointF &posicion)
+{
+    audioExplocion->setSource(QUrl("qrc:/imagenes/explosion.wav"));
+    audioExplocion->setAudioOutput(volumen1);
+    audioExplocion->play();
+
+    // Temporizador para la animación de la explosion
+    for (int i = 0; i < 3; ++i) {
+        imgExplosion[i]->setPos(posicion.x() - 50, posicion.y() - 50);
+        imgExplosion[i]->setVisible(true);  // Hacer visibles los ítems temporalmente
+
+        QTimer::singleShot(200, this, [=]() {
+            imgExplosion[i]->setVisible(false);  // Volverlos invisibles tras el tiempo
+        });
+    }
+
+}
 
 
 

@@ -12,6 +12,9 @@
 #include <QRandomGenerator>
 #include <QResizeEvent>
 #include <QMessageBox>
+#include <QMediaPlayer>
+#include <QUrl>
+#include <QAudioOutput>
 
 
 QT_BEGIN_NAMESPACE
@@ -31,6 +34,7 @@ public:
     bool tocarPared();
     void tocarEnemigo();
     void moverEnemigos();
+    void explosion(QPointF &posicion);
     void colocarBomba();
     ~MainWindow();
 
@@ -56,6 +60,7 @@ private:
 
 
     QList<QGraphicsPixmapItem*> Enemigos; // Lista de items de imagen para los enemigos
+    QList<QGraphicsPixmapItem*> imgExplosion;
     QTimer* timerEnemigos;
     QPixmap imagenEnemigo;
 
@@ -64,6 +69,11 @@ private:
 
     QGraphicsTextItem *LabelReloj, *LabelVidas, *LabelPuntaje;
     int reloj = 150, vidas = 10, puntaje = 0;
+
+    QMediaPlayer* musicaFondo;
+    QAudioOutput* volumen, *volumen1;
+    QMediaPlayer* audioExplocion;
+    QAudioOutput* volumenExplosion;
 
 
     void resizeGraphicsView() {
